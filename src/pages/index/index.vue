@@ -11,7 +11,7 @@
 	export default {
 		data() {
 			return {
-				title: 'fuck you~'
+				title: 'the template is index/'
 			}
 		},
 		onLoad() {

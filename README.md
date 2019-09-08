@@ -1,4 +1,11 @@
+<p align="center">
+  <img src="https://i.loli.net/2019/09/08/Bar8Hzuvj2W7A6d.png">
+</p>
+
 # book2
+
+book to simple Simple reader
+create by [@d1y](https://github.com/d1y)
 
 ## Project setup
 ```
