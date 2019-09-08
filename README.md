@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.loli.net/2019/09/08/Bar8Hzuvj2W7A6d.png">
+  <img width="10%" src="https://i.loli.net/2019/09/08/Bar8Hzuvj2W7A6d.png">
 </p>
 
 # book2
