@@ -1,42 +1,45 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view>
-			<text class="title">{{title}}</text>
+		<topbar :title="title" @run="fuck"></topbar>
+		<menuBar icon="shelf"></menuBar>
+		<view class="text-center">
+			<image class="logo" src="/static/logo.png"></image>
+			<view class="margin-top-sm text-gray">
+				<text class="title">{{ tinyMsg }}</text>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import menuBar from '../../components/menu_bar'
+	import topbar from '../../components/topbar'
 	export default {
+		components: {
+			menuBar,
+			topbar
+		},
 		data() {
 			return {
-				title: 'the template is index/'
+				title: '我的书架',
+				tinyMsg: '暂无书籍📚\n快去书城看看吧'
 			}
 		},
 		onLoad() {
 
 		},
 		methods: {
-
+			fuck(e) {
+				console.log(`vuejs 组件之间传递`)
+			}
 		}
 	}
 </script>
 
 <style>
-	.content {
-		text-align: center;
-		height: 400upx;
-	}
-
 	.logo {
 		height: 200upx;
 		width: 200upx;
 		margin-top: 200upx;
-	}
-
-	.title {
-		font-size: 36upx;
-		color: #8f8f94;
 	}
 </style>

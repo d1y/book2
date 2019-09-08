@@ -1,6 +1,12 @@
 {
 	"pages": [
 		{
+			"path": "pages/search/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/startup/index",
 			"style": {
 				"navigationStyle": "custom"
@@ -9,7 +15,7 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationStyle": "custom"
 			}
 		}
 	],
