@@ -20,8 +20,17 @@
       </view>
     </view>
     <view class="cu-list grid col-3 no-border">
-      <view class="cu-item solid line-orange">
-        1
+      <view class="cu-item text-gray">
+        王者荣耀
+      </view>
+      <view class="cu-item text-blue">
+        英雄联盟
+      </view>
+      <view class="cu-item text-green">
+        系统
+      </view>
+      <view class="cu-item text-yellow">
+        打工仔
       </view>
     </view>
     <view class="cu-list menu">
