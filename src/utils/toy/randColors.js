@@ -15,7 +15,7 @@ const colors = [
   `grey`,
   `gray`,
   `black`,
-  `white`
+  // `white`
 ]
 
 const RGBS = [
@@ -47,16 +47,14 @@ const randColr = (middle = `text`, flag) => {
     let Arrlen = 1
     Arrlen = flag || Arrlen
     for (let i=0; i<Arrlen; i++) {
-      result.push(`${middle}-${randomInt(colors)}`)
+      if (RGB) {
+        result.push(`bg-gradual-${randomInt(RGBS)}`)
+      } else {
+        result.push(`${middle}-${randomInt(colors)}`)
+      }
     }
-  }
-  if (middle == `text`) {
-
-  } else if (middle == `bg`) {
-
   }
   return result
 }
-console.log(randColr(`soak`))
 
 module.exports = randColr

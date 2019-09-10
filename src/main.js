@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import App from './App'
-
-import Utils from './utils'
-console.log(Utils)
+import $storage from './utils/toy/storage'
 
 Vue.config.productionTip = false
+
+Vue.prototype.$storage = $storage
 
 App.mpType = 'app'
 
