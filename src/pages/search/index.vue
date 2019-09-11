@@ -27,9 +27,9 @@
     <view class="cu-list grid col-3 no-border">
       <view class="cu-item" 
         :class="[item.color]" 
-        v-for="item in historys" 
-        :key="item.text" 
-        @tap="toText(item.text)">
+        v-for="(item, index) in historys" 
+        :key="item.time" 
+        @tap="toText(index)">
         {{ item.text }}
       </view>
     </view>
@@ -55,8 +55,10 @@
       this.fetchSearchHistorys()
     },
     methods: {
-      toText(e) {
-        console.log(e)
+      toText(index) {
+        const data = this.historys[index]
+        this.search = data.text
+        this.setSearchHistorys(data)
       },
       fetchSearchBook(e) {
         const text = this.search
@@ -64,7 +66,8 @@
         console.log(`search to: `, text)
         this.setSearchHistorys({
           text,
-          color: randColr(`text`)
+          color: randColr(`text`),
+          time: Date.now() // create timestamp
         })
       },
       async fetchSearchHistorys(middle) {
@@ -74,23 +77,30 @@
         this.historys = obj
       },
       async setSearchHistorys(data) {
+        const LIMIT = 9
         const old = await this.fetchSearchHistorys(true)
-        console.log(`current array: `, old)
-        console.log(`send msg: `, data)
+        const len = old.length
+        // console.log(`current array: `, old)
+        // console.log(`send msg: `, data)
         let isBeing = false
         for (let i=0; i<old.length; i++) {
           const ele = old[i]
           if (ele.text == data.text) {
-            isBeing = i
-            console.log(i)
+            isBeing = i+1
+            console.log(`oops, index: ${i}`)
             break
           }
         }
-        console.log(isBeing)
-        // isBeing ? old.splice(isBeing, 1) : old.pop()
-        // const nw = old.unshift(data)
-        // const flag = await this.$storage.set(searchKey, JSON.stringify(nw))
-        // if (flag) this.historys = nw
+        if (!isBeing) {
+          if (len >= LIMIT) {
+            old.pop()
+          }
+        } else { // repeat text
+          old.splice(isBeing-1, 1)
+        }
+        old.unshift(data)
+        const flag = await this.$storage.set(searchKey, JSON.stringify(old))
+        if (flag) this.historys = old
       },
       async clearHistorys() {
         const cleared = await this.$storage.remove(searchKey)

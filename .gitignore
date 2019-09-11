@@ -2,7 +2,8 @@
 node_modules/
 unpackage/
 dist/
-src/static
+src/static/
+src/utils/config/*.json
 
 # local env files
 .env.local
