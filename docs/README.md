@@ -5,3 +5,7 @@
 - [setup2](./setup2.md): 懒得写样式, 套版就完事了
 
 - [setup3](./setup3.md): 写个组件,方便给页面使用
+
+- [setup4](./setup4.md): 接下来的难点以及思考
+
+- [setup5](./setup5.md): 老司机带你解决跨域问题

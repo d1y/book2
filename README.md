@@ -41,6 +41,4 @@ yarn lint
 - https://github.com/badboy-tian/flutter_panovel_app
 
 
-书源地址参考:
-
-<script src="https://gist.github.com/d1y/1d13e0e8ea0b37f741dae2489b99e3f5.js"></script>
+书源地址参考: [gist](https://gist.github.com/d1y/1d13e0e8ea0b37f741dae2489b99e3f5.js)

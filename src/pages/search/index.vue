@@ -43,6 +43,7 @@
   const searchKey = `search_historys`
 
   const randColr = require("@/utils/toy/randColors")
+  const books = require("@/utils/api/books/site/biquge")
 
   export default {
     data() {

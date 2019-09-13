@@ -26,7 +26,7 @@
 			}
 		},
 		onLoad() {
-
+			
 		},
 		methods: {
 			fuck(e) {
