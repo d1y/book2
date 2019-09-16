@@ -1,15 +1,6 @@
 /*
 ** site: https://www.biquge.cm
+** @tips { 暂不支持`gbk`编码格式 }
 */
 
-const book = require('../translater')
-
-class biquge extends book { }
-
-const nw = new biquge({
-  url: `https://www.biquge.cm`
-})
-
-nw.tags(true)
-
-module.exports = biquge
+module.exports = false

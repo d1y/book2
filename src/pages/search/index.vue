@@ -43,7 +43,11 @@
   const searchKey = `search_historys`
 
   const randColr = require("@/utils/toy/randColors")
-  const books = require("@/utils/api/books/site/biquge")
+  import books from "@/utils/api/books/site/zhuishushenqi"
+  const nw = new books
+  nw.searchHotWords().then(r=> {
+    console.log(r)
+  })
 
   export default {
     data() {
