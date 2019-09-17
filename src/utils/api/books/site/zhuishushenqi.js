@@ -11,13 +11,20 @@ class zhuishu extends trans {
   
   async searchHotWords() {
     return await this.initRequest({
-      url: DRAW('book/search-hotwords')
+      url: DRAW(`book/search-hotwords`)
     })
   }
 
   async hotWords() {
     return await this.initRequest({
-      url: DRAW('book/hot-word')
+      url: DRAW(`book/hot-word`)
+    })
+  }
+
+  async searchAutoComplete(query = `斗破苍穹`) {
+    return await this.initRequest({
+      url: DRAW(`book/auto-complete`),
+      data: { query }
     })
   }
 }

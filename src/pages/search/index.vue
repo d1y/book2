@@ -19,12 +19,18 @@
       </view>
     </view>
     <view class="cu-bar bg-white solid-bottom">
-      <view class="margin-left-sm action"><text class="cuIcon-title text-orange"></text>  搜索历史</view>
+      <view class="margin-left-sm action"><text class="cuIcon-title text-orange"></text>  搜索热词 </view> 
+    </view>
+    <view class="cu-bar bg-white solid-bottom">
+      <view class="margin-left-sm action"><text class="cuIcon-title text-orange"></text>  热门搜索 </view> 
+    </view>
+    <view class="cu-bar bg-white solid-bottom" v-if="historys.length">
+      <view class="margin-left-sm action"><text class="cuIcon-title text-orange"></text>  搜索历史 </view>
       <view class="action">
-        <button class="cu-btn bg-green shadow">清空历史</button>
+        <button class="cu-btn bg-green shadow" @click="clearHistorys">清空历史</button>
       </view>
     </view>
-    <view class="cu-list grid col-3 no-border">
+    <view class="cu-list no-border" :class="[ historys.length ? 'grid col-3' : '' ]">
       <view class="cu-item" 
         :class="[item.color]" 
         v-for="(item, index) in historys" 
@@ -32,7 +38,31 @@
         @tap="toText(index)">
         {{ item.text }}
       </view>
+      <view v-if="!historys.length" class="text-gray text-center margin-top-xl">
+        <view class="margin-bottom-xs">
+          <image class="minImage" mode="aspectFit" :src="minBook"></image>
+        </view>
+        <text>{{ minText }}</text>
+      </view>
     </view>
+    <view
+    @tap="modalName = ''" 
+    class="cu-modal" 
+    :class="modalName == 'show' ? 'show' : ''"
+    >
+			<view class="cu-dialog">
+				<view class="cu-bar bg-white justify-end">
+					<view class="content">{{ modalOptions.title }}</view>
+					<view class="action" @tap="modalName = ''">
+						<text class="cuIcon-close text-red"></text>
+					</view>
+				</view>
+				<view class="padding-xl">
+          {{ modalOptions.body }}
+				</view>
+			</view>
+		</view>
+
   </view>
 </template>
 
@@ -48,12 +78,24 @@
   nw.searchHotWords().then(r=> {
     console.log(r)
   })
+  // nw.hotWords().then(r=> {
+  //   console.log(r)
+  // })
 
   export default {
     data() {
+      const cp = `https://i.loli.net/2019/09/17/Wyp1fruSeNJqmxt.png`,
+            cp1 = `https://i.loli.net/2019/09/17/hRAxCsdcOmrzfBi.png`
       return {
         search: ``,
-        historys: []
+        historys: [],
+        modalName: ``,
+        modalOptions: {
+          title: `提示`,
+          body: ``
+        },
+        minBook: cp || cp1,
+        minText: `没有搜索历史记录`
       }
     },
     onLoad() {
@@ -68,7 +110,6 @@
       fetchSearchBook(e) {
         const text = this.search
         if (!text || text == '') return
-        console.log(`search to: `, text)
         this.setSearchHistorys({
           text,
           color: randColr(`text`),
@@ -92,7 +133,7 @@
           const ele = old[i]
           if (ele.text == data.text) {
             isBeing = i+1
-            console.log(`oops, index: ${i}`)
+            // console.log(`oops, index: ${i}`)
             break
           }
         }
@@ -109,6 +150,13 @@
       },
       async clearHistorys() {
         const cleared = await this.$storage.remove(searchKey)
+        if (cleared) {
+          this.modalOptions.title = '🌻 提示 🌻'
+          this.modalOptions.body = '已清理搜索历史🤣'
+          this.historys = []
+        } else {
+          console.error('为空或者异常: ', cleared)
+        }
         return cleared
       }
     }
@@ -118,5 +166,11 @@
 <style>
   .close-color {
     color: #c8c0c0
+  }
+  .minImage {
+    max-width: 180upx;
+    max-height: 180upx;
+    border-radius: 80%;
+    opacity: .5;
   }
 </style>
