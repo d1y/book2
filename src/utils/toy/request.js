@@ -14,6 +14,10 @@ export default config => {
     'content-type': 'application/x-www-form-urlencoded;charset=gbk'
   }
   return new Promise((rcv, rjt)=> {
+    uni.showLoading({
+      title: '加载中(゜-゜)つロ ',
+      mask: true,
+    })
     uni.request({
       url,
       data,
@@ -21,10 +25,17 @@ export default config => {
       header,
       success(data) {
         if (data.statusCode == 200) {
+          uni.hideLoading()
           rcv(data.data)
         }
       },
       fail(err) {
+        uni.hideLoading()
+        uni.showModal({
+          title: '提示',
+          content: '请求失败',
+          showCancel: false
+        })
         console.error(`send request: ${JSON.stringify(err)}`)
         rcv(err)
       }
