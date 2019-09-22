@@ -1,9 +1,9 @@
 <template>
   <view>
-    <view class="cu-bar bg-cyan search">
+    <view class="cu-bar bg-cyan diy-bar">
       <view class="search-form radius">
         <text class="cuIcon-search"></text>
-        <input @keydown.enter="fetchSearchBook" v-model.trim="search" type="text" placeholder="搜索小说"
+        <input @keydown.enter="fetchSearchBook" @input="fetchSearchText" v-model.trim="search" type="text" placeholder="搜索小说"
           confirm-type="search" />
         <view class="input-placeholder">
           <text @click="search = ''" v-if="search.length >= 1"
@@ -15,12 +15,27 @@
         <text>取消</text>
       </view>
     </view>
-    <view class="cu-list menu solid-bottom">
-      <view v-if="search.length >= 1" class="cu-item text-center" @click="fetchSearchBook">
-        <view class="content text-gray">搜索 "<text class="text-black">{{ search }}</text>"</view>
+    <view class="fixed-bar" v-if="search.length >= 1">
+      <view class="cu-list menu solid-bottom" style="border-bottom: 2upx solid rgb(205, 205, 205)">
+        <view class="cu-item text-center" @click="fetchSearchBook">
+          <view class="content text-gray">搜索 "<text class="text-black">{{ search }}</text>"</view>
+        </view>
+      </view>
+      <view style="max-height: 100%;overflow:auto">
+        <scroll-view v-if="autoTexts.length" scroll-y="true" style="background: #fff;">
+          <view class="text-center auto-line" v-for="(item,index) in autoTexts" :key="index">
+            <view class="content">{{ item }}</view>
+          </view>
+        </scroll-view>
+        <view v-else>
+          <view class="text-center text-gray margin-xl">
+            <image class="minImage margin-xs" mode="aspectFit" :src="minBook"></image>
+            <view>没有, 下一位!</view>
+          </view>
+        </view>
       </view>
     </view>
-    <view v-if="searchHotWords.length">
+    <view v-if="searchHotWords.length" style="padding-top: 100upx;">
       <view class="cu-bar bg-white solid-bottom">
         <view class="margin-left-sm action"><text class="cuIcon-title text-orange"></text> 搜索热词 </view>
         <view class="action">
@@ -97,9 +112,26 @@
 
   const randColr = require("@/utils/toy/randColors")
   import books from "@/utils/api/books/site/zhuishushenqi"
+  import List from '@/components/book/lists.vue'
   const nw = new books
+  // 防抖, 来自掘金
+  function debounce(func, wait) {
+    let timeout;
+    return function () {
+        let context = this;
+        let args = arguments;
 
+        clearTimeout(timeout)
+        timeout = setTimeout(function(){
+            func.apply(context, args)
+        }, wait);
+    }
+  }
+  const autoWait = 100 // 防抖等待时间
   export default {
+    components: {
+      List
+    },
     data() {
       const cp = `https://i.loli.net/2019/09/17/Wyp1fruSeNJqmxt.png`,
         cp1 = `https://i.loli.net/2019/09/17/hRAxCsdcOmrzfBi.png`
@@ -122,8 +154,10 @@
         nextFetch: [
           [0, 4, 4],
           [0, 8, 8]
-        ], // 随机截取
+        ], // 截取
         history_len: 9, // 搜索历史长度
+        autoTexts: [], // 搜索自动推荐词
+
       }
     },
     onLoad() {
@@ -132,6 +166,16 @@
       this.toFetchHots('搜索热词', '热门搜索')
     },
     methods: {
+      /*
+      ** 搜索补全
+      */
+      fetchSearchText: debounce(function(){
+        const that = this
+        nw.searchAutoComplete(that.search)
+          .then(r=> {
+            that.autoTexts = r.keywords
+          })
+      }, autoWait),
       nextWords(flag) {
         /* 
          ** @tips 下一批 
@@ -241,10 +285,18 @@
       fetchSearchBook(e) {
         const text = this.search
         if (!text || text == '') return
+        /* 设置历史 */
         this.setSearchHistorys({
           text,
           color: randColr(`text`),
           time: Date.now() // create timestamp
+        })
+        nw.searchBook({
+          query: text,
+          start: 0,
+          limit: 10
+        }).then(r=> {
+          console.log(r)
         })
       },
       async fetchSearchHistorys(middle) {
@@ -304,5 +356,28 @@
     max-height: 180upx;
     border-radius: 80%;
     opacity: .5;
+  }
+  .fixed-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 100upx;
+    z-index: 233;
+    background: #fff;
+  }
+  .diy-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99999;
+  }
+  .auto-line {
+    margin: 16upx 0;
+    padding: 10upx 0;
+    border-bottom: 2upx solid #dfdcd9;
+    color: #5f5d5a;
   }
 </style>

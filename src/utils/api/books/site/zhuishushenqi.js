@@ -27,6 +27,18 @@ class zhuishu extends trans {
       data: { query }
     })
   }
+
+  async searchBook(data) {
+    return await this.initRequest({
+      url: DRAW(`book/fuzzy-search`),
+      /*
+      ** query : 搜索文字
+      ** start : 分页(0开始)
+      ** limit : 每页大小
+      */
+      data
+    })
+  }
 }
 
 export default zhuishu
