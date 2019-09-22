@@ -1,13 +1,13 @@
 {
 	"pages": [
 		{
-			"path": "pages/search/index",
+			"path": "pages/startup/index",
 			"style": {
 				"navigationStyle": "custom"
 			}
 		},
 		{
-			"path": "pages/startup/index",
+			"path": "pages/search/index",
 			"style": {
 				"navigationStyle": "custom"
 			}

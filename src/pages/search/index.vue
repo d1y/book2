@@ -1,9 +1,9 @@
 <template>
-  <view>
+  <view style="padding-top: 100upx">
     <view class="cu-bar bg-cyan diy-bar">
       <view class="search-form radius">
         <text class="cuIcon-search"></text>
-        <input @keydown.enter="fetchSearchBook" @input="fetchSearchText" v-model.trim="search" type="text" placeholder="搜索小说"
+        <input @keydown.enter="fetchSearchBook" @change="fetchSearchBook" @input="fetchSearchText" v-model.trim="search" type="text" placeholder="搜索小说"
           confirm-type="search" />
         <view class="input-placeholder">
           <text @click="search = ''" v-if="search.length >= 1"
@@ -15,7 +15,20 @@
         <text>取消</text>
       </view>
     </view>
-    <view class="fixed-bar" v-if="search.length >= 1">
+    <view class="fixed-bar" v-if="search.length">
+      <view style="max-height: 100%;overflow:auto">
+        <!-- TODO: autoTexts.length 这里为什么我这么设置? -->
+        <scroll-view v-if="autoTexts.length || true" scroll-y="true" style="background: #fff;">
+          <view v-for="item in Books" :key="item._id">
+            <List :data="item"></List>
+          </view>
+          <view class="text-center padding-sm">
+            <button class="cu-btn bg-green">加载更多</button>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+    <view class="fixed-bar" v-if="search.length >= 1 && searchFlag">
       <view class="cu-list menu solid-bottom" style="border-bottom: 2upx solid rgb(205, 205, 205)">
         <view class="cu-item text-center" @click="fetchSearchBook">
           <view class="content text-gray">搜索 "<text class="text-black">{{ search }}</text>"</view>
@@ -35,7 +48,7 @@
         </view>
       </view>
     </view>
-    <view v-if="searchHotWords.length" style="padding-top: 100upx;">
+    <view v-if="searchHotWords.length">
       <view class="cu-bar bg-white solid-bottom">
         <view class="margin-left-sm action"><text class="cuIcon-title text-orange"></text> 搜索热词 </view>
         <view class="action">
@@ -77,7 +90,7 @@
     </view>
     <view class="cu-list no-border" :class="[ historys.length ? 'grid col-3' : '' ]">
       <view class="cu-item" :class="[item.color]" v-for="(item, index) in historys" :key="item.time"
-        @tap="toText(index)">
+        @tap="toText(index, 'h')">
         {{ item.text }}
       </view>
       <view v-if="!historys.length" class="text-gray text-center margin-top-xl">
@@ -137,6 +150,7 @@
         cp1 = `https://i.loli.net/2019/09/17/hRAxCsdcOmrzfBi.png`
       return {
         search: ``,
+        searchFlag: false,
         historys: [],
         modalName: ``,
         modalOptions: {
@@ -157,7 +171,7 @@
         ], // 截取
         history_len: 9, // 搜索历史长度
         autoTexts: [], // 搜索自动推荐词
-
+        Books: []
       }
     },
     onLoad() {
@@ -171,6 +185,8 @@
       */
       fetchSearchText: debounce(function(){
         const that = this
+        that.searchFlag = true
+        if (that.search == '' && !that.search) return
         nw.searchAutoComplete(that.search)
           .then(r=> {
             that.autoTexts = r.keywords
@@ -273,17 +289,25 @@
       },
       toText(...indexs) {
         // 点击文字
-        // @param <arr> - indexs <判断点击是哪个>
-        console.log(indexs)
-        return false
-        const data = this.historys[index]
-        console.log(data)
-        return false
+        let flag = indexs[1]
+        let index = indexs[0]
+        let data
+        if (flag == 'h') {
+          data = this.historys[index]
+        } else if (flag == 's') {
+          data = this.activeSearchHotWords[index]
+          data.text = data.word
+        } else if (flag == 'n') {
+          // TODO: 跳转到书籍页面
+          return
+        }
         this.search = data.text
-        this.setSearchHistorys(data)
+        // this.setSearchHistorys(data)
+        this.fetchSearchBook()
       },
       fetchSearchBook(e) {
         const text = this.search
+        const that = this
         if (!text || text == '') return
         /* 设置历史 */
         this.setSearchHistorys({
@@ -296,7 +320,8 @@
           start: 0,
           limit: 10
         }).then(r=> {
-          console.log(r)
+          that.searchFlag = false
+          that.Books = r.books
         })
       },
       async fetchSearchHistorys(middle) {

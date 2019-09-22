@@ -3,6 +3,7 @@
 ** @tips [ 接口版本 ]
 */
 import trans from '../translater'
+import { Agent } from 'https';
 
 const $API = `http://api.zhuishushenqi.com`
 const DRAW = trans.router($API)
@@ -29,7 +30,7 @@ class zhuishu extends trans {
   }
 
   async searchBook(data) {
-    return await this.initRequest({
+    const lists = await this.initRequest({
       url: DRAW(`book/fuzzy-search`),
       /*
       ** query : 搜索文字
@@ -38,6 +39,13 @@ class zhuishu extends trans {
       */
       data
     })
+    lists.books = lists.books.map(item=> {
+      // TODO: 可能在App端,`unescape`可能不存在
+      let tips = `agent`
+      item.cover = unescape(item.cover).split(`/${tips}/`)[1]
+      return item
+    })
+    return lists
   }
 }
 

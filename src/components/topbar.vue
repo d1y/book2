@@ -8,8 +8,8 @@
         {{ title }}
       </view>
       <view class="action">
-        <text class="cuIcon-search margin-right-sm" :class="color == 'white' ? 'text-white' : 'text-black'"></text>
-        <text class="cuIcon-add" :class="color == 'white' ? 'text-white' : 'text-black'"></text>
+        <text @click="searchLink" class="cuIcon-search margin-right-sm" :class="color == 'white' ? 'text-white' : 'text-black'"></text>
+        <text @click="addMore" class="cuIcon-add" :class="color == 'white' ? 'text-white' : 'text-black'"></text>
       </view>
     </view>
   </view>
@@ -30,11 +30,21 @@
       },
       title: {
         type: String
+      },
+      onSearchLink: {
+        type: String,
+        default: `/pages/search/index`
       }
     },
     methods: {
         menuClick() {
-          this.$emit('run', 'hello world')
+          this.$emit('menu')
+        },
+        searchLink() {
+          uni.navigateTo({url: this.onSearchLink})
+        },
+        addMore() {
+          this.$emit('add')
         }
     }
   }
