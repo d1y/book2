@@ -10,7 +10,7 @@
             class="cuIcon-close close-color text-white radius"></text>
         </view>
       </view>
-      <view class="action">
+      <view class="action" @tap="backLink">
         <text class="cuIcon-close"></text>
         <text>取消</text>
       </view>
@@ -180,6 +180,11 @@
       this.toFetchHots('搜索热词', '热门搜索')
     },
     methods: {
+      backLink(){
+        uni.navigateBack({
+          delta: 1
+        })
+      },
       /*
       ** 搜索补全
       */

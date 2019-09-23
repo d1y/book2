@@ -7,6 +7,12 @@
 			}
 		},
 		{
+			"path": "pages/settings/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/search/index",
 			"style": {
 				"navigationStyle": "custom"

@@ -38,6 +38,7 @@
     },
     methods: {
         menuClick() {
+          console.log('clicked to menu')
           this.$emit('menu')
         },
         searchLink() {

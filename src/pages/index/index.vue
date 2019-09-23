@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
-		<view class="DrawerPage">
-			<topbar :title="title"></topbar>
+		<view class="DrawerPage" :class="modalName=='view'?'show':''">
+			<topbar @menu="menuClick" :title="title"></topbar>
 			<menuBar icon="shelf"></menuBar>
 			<view class="text-center">
 				<image class="logo" src="/static/logo.png"></image>
@@ -13,12 +13,16 @@
 		<view class="DrawerClose" :class="modalName=='view'?'show':''" @tap="modalName = ''">
 			<text class="cuIcon-pullright"></text>
 		</view>
-		<scroll-view scroll-y class="DrawerWindow" :class="modalName=='view'?'show':''">
+		<scroll-view scroll-y class="DrawerWindow" :style="{ backgroundImage: `url(${windowBg})` }" :class="modalName=='view'?'show':''">
 			<view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
-				<view class="cu-item arrow" v-for="(item,index) in 20" :key="index">
+				<view 
+				class="cu-item arrow" 
+				v-for="(item,index) in menus" 
+				:key="index"
+				@click="getCard(item.link)">
 					<view class="content">
-						<text class="cuIcon-github text-grey"></text>
-						<text class="text-grey">{{index +1}}</text>
+						<text class="text-grey" :class="[ `cuIcon-${item.icon}` ]"></text>
+						<text class="text-grey">{{ item.title }}</text>
 					</view>
 				</view>
 			</view>
@@ -38,7 +42,20 @@
 			return {
 				title: `我的书架`,
 				tinyMsg: `暂无书籍📚\n快去书城看看吧`,
-				modalName: `view`
+				modalName: ``,
+				menus: [
+					{
+						title: '设置',
+						icon: 'settings',
+						link: 'settings/index'
+					},
+					{
+						title: '分享给朋友',
+						icon: 'friend',
+						link: 'xx/xx'
+					}
+				],
+				windowBg: `https://i.loli.net/2019/09/23/hEj5nvgI8WKeiQ3.png`
 			}
 		},
 		onLoad() {
@@ -46,8 +63,13 @@
 		},
 		methods: {
 			Link(url) {
-				console.log('xxoo')
 				uni.navigateTo({url})
+			},
+			menuClick() {
+				this.modalName = `view`
+			},
+			getCard(url) {
+				this.Link(`/pages/${url}`)
 			}
 		}
 	}
@@ -90,6 +112,10 @@
 		pointer-events: none;
 		transition: all 0.4s;
 		padding: 100upx 0;
+		/* 自定义设置背景 */
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
 	}
 	.DrawerWindow.show {
 		transform: scale(1, 1) translateX(0%);

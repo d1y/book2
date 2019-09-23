@@ -1,36 +1,21 @@
 <template>
   <view class="cu-bar tabbar bg-white diy-bar">
-    <view class="action" @click="linkTo(links[0])">
+    <view class="action"
+    v-for="item in menus"
+    :key="item.text">
+    {{ item.icon }}
       <view class="cuIcon-cu-image">
-        <image :src="icon == 'shelf' ? bookshelf_hover : bookshelf"></image>
-        <!-- <view class="cu-tag badge">99</view> -->
+        <image :src="current == item.text ? item.hover : item.icon"></image>
+        <view class="cu-tag badge">99</view>
       </view>
-      <view :class="icon == 'shelf' ? 'active-color' : 'text-gray'">书架</view>
-    </view>
-    <view class="action" @click="linkTo(links[1])">
-      <view class="cuIcon-cu-image">
-        <image :src="icon == 'city' ? bookcity_hover : bookcity"></image>
-      </view>
-      <view :class="icon == 'city' ? 'active-color' : 'text-gray'">书城</view>
-    </view>
-    <view class="action" @click="linkTo(links[2])">
-      <view class="cuIcon-cu-image">
-        <image :src="icon == 'board' ? board_hover : board"></image>
-      </view>
-      <view :class="icon == 'board' ? 'active-color' : 'text-gray'">排行榜</view>
-    </view>
-    <view class="action" @click="linkTo(links[3])">
-      <view class="cuIcon-cu-image">
-        <image :src="icon == 'me' ? me_hover : me"></image>
-        <!-- <view class="cu-tag badge"></view> -->
-      </view>
-      <view :class="icon == 'me' ? 'active-color' : 'text-gray'">关于我</view>
+      <view :class="current == item.text ? 'active-color' : 'text-gray'">{{ item.text }}</view>
     </view>
   </view>
 </template>
 
 <script>
 
+import menuConf from '@/utils/config/menu'
 const hover = str=> str.split('.png')[0]+`_hover`+`.png`
 const path = `/static/menu`
 const bookshelf = `${path}/bookshelf.png`
@@ -59,12 +44,14 @@ const obj = {
 
 export default {
   props: {
-    icon: {
+    current: {
       type: String
     }
   },
   data() {
-    return obj
+    return {
+      menus: menuConf
+    }
   },
   methods: {
     linkTo(e) {
