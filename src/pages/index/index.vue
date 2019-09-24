@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="DrawerPage" :class="modalName=='view'?'show':''">
 			<topbar @menu="menuClick" :title="title"></topbar>
-			<menuBar icon="shelf"></menuBar>
+			<menuBar current="书架"></menuBar>
 			<view class="text-center">
 				<image class="logo" src="/static/logo.png"></image>
 				<view class="margin-top-sm text-gray">

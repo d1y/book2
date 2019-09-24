@@ -1,12 +1,10 @@
 <template>
   <view class="cu-bar tabbar bg-white diy-bar">
-    <view class="action"
-    v-for="item in menus"
-    :key="item.text">
-    {{ item.icon }}
+    <view class="action" v-for="item in menus" :key="item.text">
       <view class="cuIcon-cu-image">
         <image :src="current == item.text ? item.hover : item.icon"></image>
-        <view class="cu-tag badge">99</view>
+        <!-- TODO: 预留 -->
+        <!-- <view class="cu-tag badge">99</view> -->
       </view>
       <view :class="current == item.text ? 'active-color' : 'text-gray'">{{ item.text }}</view>
     </view>
@@ -16,31 +14,7 @@
 <script>
 
 import menuConf from '@/utils/config/menu'
-const hover = str=> str.split('.png')[0]+`_hover`+`.png`
-const path = `/static/menu`
-const bookshelf = `${path}/bookshelf.png`
-const bookcity = `${path}/bookcity.png`
-const board = `${path}/board.png`
-const me = `${path}/me.png`
-
-const links = [
-  `/pages/index/index`,
-  `/pages/xxx/xxx`,
-  '/pages/xxx/xxxxx',
-  '/pages/xx/xxx'
-]
-
-const obj = {
-  bookshelf,
-  bookshelf_hover: hover(bookshelf),
-  bookcity,
-  bookcity_hover: hover(bookcity),
-  board,
-  board_hover: hover(board),
-  me,
-  me_hover: hover(me),
-  links
-}
+const { list } = menuConf
 
 export default {
   props: {
@@ -50,7 +24,7 @@ export default {
   },
   data() {
     return {
-      menus: menuConf
+      menus: list
     }
   },
   methods: {

@@ -1,6 +1,12 @@
 {
 	"pages": [
 		{
+			"path": "pages/book/details",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/startup/index",
 			"style": {
 				"navigationStyle": "custom"

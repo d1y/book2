@@ -3,10 +3,10 @@
 ** @tips [ 接口版本 ]
 */
 import trans from '../translater'
-import { Agent } from 'https';
 
 const $API = `http://api.zhuishushenqi.com`
 const DRAW = trans.router($API)
+const decode = str=> unescape(str).split(`/agent/`)[1]
 
 class zhuishu extends trans {
   
@@ -41,12 +41,20 @@ class zhuishu extends trans {
     })
     lists.books = lists.books.map(item=> {
       // TODO: 可能在App端,`unescape`可能不存在
-      let tips = `agent`
-      item.cover = unescape(item.cover).split(`/${tips}/`)[1]
+      item.cover = UNCODE(item.cover)
       return item
     })
     return lists
   }
+
+  async bookInfo(id) {
+    const DATA = await this.initRequest({
+      url: DRAW(`book/${id}`)
+    })
+    DATA.cover = decode(DATA.cover)
+    return DATA
+  }
+
 }
 
 export default zhuishu
