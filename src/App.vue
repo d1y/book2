@@ -23,4 +23,8 @@
 	@import url("./common/colorui/icon.css");
 	@import url("./common/colorui/animation.css");
 
+	.diy-bottom-bar {
+		padding-bottom: 120upx;
+	}
+
 </style>
