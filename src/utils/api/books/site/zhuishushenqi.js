@@ -55,6 +55,13 @@ class zhuishu extends trans {
     return DATA
   }
 
+  async getChapters(id) {
+    const data = await this.initRequest({
+      url: DRAW(`mix-atoc/${id}?view=chapters`)
+    })
+    return data.mixToc
+  }
+
 }
 
 export default zhuishu

@@ -12,9 +12,9 @@
         </view>
       </view>
       <view>
-        <view class="cu-bar bg-white">
+        <view class="cu-bar bg-red ">
           <view class="action">
-            <text class="cuIcon-titles text-green"></text>
+            <text class="cuIcon-titles text-white"></text>
             <text class="text-xl">简介</text>
           </view>
         </view>
@@ -26,12 +26,15 @@
         <view class="text-gray text-sm padding-left-sm padding-right-sm">
           {{ data.longIntro }}
         </view>
-        <view class="cu-bar bg-white">
+        <view class="cu-bar bg-green margin-top-sm">
           <view class="action">
-            <text class="cuIcon-titles text-orange"></text>
-            <text class="text-xl">目录</text>
-          </view>
-          <view class="content">xx</view>
+            <text class="cuIcon-titles text-white"></text>
+            <text class="text-xl">目录(共{{ data.chaptersCount }}章)</text>
+          </view>          
+        </view>
+        <view class="padding-xs text-gray">
+          <view class="margin-sm"> <text class="text-orange margin-right-xs">最新章节: </text> {{ data.lastChapter }}</view>
+          <button @click="loadChapters" class="cu-btn bg-green">查看章节</button>
         </view>
       </view>
     </view>
@@ -67,11 +70,14 @@ export default {
   },
   data() {
     return {
-     data: {}
+     data: {},
+     Chapters: [],
+     bookID: ``,
     }
   },
   onLoad({ id=`548d9c17eb0337ee6df738f5` }) {
     const that = this
+    that.bookID = id
     nw.bookInfo(id).then(r=> {
       r.wordCount = word(r.wordCount)
       const result = []
@@ -87,6 +93,14 @@ export default {
   },
   onPageScroll() {
     // TODO: 滚动事件
+  },
+  methods: {
+    loadChapters(flag) {
+      const that = this
+      uni.navigateTo({
+        url: `chapters?id=${ that.bookID }&title=${ that.data.title }`
+      })
+    }
   }
 }
 </script>

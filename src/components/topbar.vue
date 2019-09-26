@@ -1,7 +1,7 @@
 <template>
-  <view>
+  <view class="topbar shadow">
     <view class="cu-bar search" :style="{ backgroundColor: bg }">
-      <view class="cu-avatar" @click="menuClick">
+      <view class="cu-avatar diy-avatar-bg" @click="menuClick">
         <text class="lg" 
          :class="[color == 'white' ? 'text-white' : 'text-black', isBack ? 'cuIcon-back' : 'cuIcon-sort']"></text>
       </view>
@@ -56,8 +56,19 @@
   }
 </script>
 
-<style scoped>
-.cu-avatar {
+<style>
+page {
+  padding-top: 100upx
+}
+.diy-avatar-bg {
   background: none !important;
+}
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100upx;
+  z-index: 9999999; /* x_x */
 }
 </style>
