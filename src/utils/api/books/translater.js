@@ -2,9 +2,6 @@ const cheerio = require('cheerio')
 import request from '../../toy/request'
 
 class Bookfetch {
-  // constructor(url) {
-  //   this.url = url
-  // }
 
   static init() {
     return new Bookfetch
@@ -27,9 +24,16 @@ class Bookfetch {
   /*
   ** @tips <若返回的内容为`html`, 将转换为对象使用`>
   ** @param <string> - html
-  ** @return <obj>
+  ** @param <boolean> - flag
+  ** @return <Promise>
   */
-  _to(html) {
+  async _toHTML(html, flag = true) {
+    if (flag) {
+      const HTML = await this.initRequest({
+        url: html
+      })
+      return cheerio.load(HTML)
+    }
     return cheerio.load(html)
   }
 

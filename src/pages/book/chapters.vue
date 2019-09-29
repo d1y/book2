@@ -1,10 +1,13 @@
 <template>
-  <view class="bg-white">
+  <view>
     <topbar :title="title" :isBack="true"></topbar>
     <view class="cu-list menu">
       <view v-for="(item,index) in Chapters" :key="index" class="cu-item arrow">
         <view class="content">{{ item.title }}</view>
         <view class="action"></view>
+      </view>
+      <view v-if="!Chapters.length" style="margin-top: 50%" class="flex solid-bottom padding justify-center text-gray">
+        章节不存在或者未加载完成
       </view>
     </view>
   </view>

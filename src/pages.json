@@ -1,13 +1,19 @@
 {
 	"pages": [
 		{
-			"path": "pages/book/chapters",
+			"path": "pages/book/reader",
 			"style": {
 				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/book/details",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/book/chapters",
 			"style": {
 				"navigationStyle": "custom"
 			}
