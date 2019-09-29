@@ -7,6 +7,6 @@ export default ()=> {
   let system = uni.getSystemInfoSync()
   // #ifdef H5
   system.currentBattery = 0
-  // #endi
+  // #endif
   return system
 }

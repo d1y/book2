@@ -1,5 +1,5 @@
 <template>
-  <view class="topbar shadow">
+  <view class="topbar shadow" :class="isHide ? 'hide' : ''">
     <view class="cu-bar search" :style="{ backgroundColor: bg }">
       <view class="cu-avatar diy-avatar-bg" @click="menuClick">
         <text class="lg" 
@@ -40,6 +40,10 @@
       isBack: {
         type: Boolean,
         default: false
+      },
+      isHide: {
+        type: Boolean,
+        default: false
       }
     },
     methods: {
@@ -56,7 +60,8 @@
   }
 </script>
 
-<style>
+<style >
+
 page {
   padding-top: 100upx
 }
@@ -70,5 +75,9 @@ page {
   width: 100%;
   min-height: 100upx;
   z-index: 9999999; /* x_x */
+  transition: all .3s;
+}
+.topbar.hide {
+  transform: translate(0, -250upx)
 }
 </style>
