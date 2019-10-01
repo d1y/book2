@@ -4,7 +4,9 @@ export default {
       uni.getStorage({
         key,
         success(res) {
-          if (res.data) rcv(res.data)
+          // TODO: 在某些应用场景中, 会有`0`的存在(2019-10-01)
+          // if (res.data) rcv(res.data)
+          rcv(res.data)
         },
         fail: err=> {
           const errorMsg = `获取失败`
