@@ -20,7 +20,7 @@
         {{ data.chapter_name }}
       </view>
       <view class="body">
-        {{ data.body }}
+        <rich-text :nodes="data.body"></rich-text>
       </view>
       <view class="view-footer text-green line-green">
         已到末尾
@@ -164,8 +164,10 @@ export default {
     this.Themes = Themes
     this.diy = Themes.all[Themes.index]
     this.fontSize = Themes.fontSize
-    const data = await book.getBody()
-    this.data = data
+    const test = await book.getChapters()
+    console.log(test)
+    // const data = await book.getBody()
+    // this.data = data
     setInterval(()=> {
       this.loadUtils()
     }, this.time)
@@ -233,7 +235,6 @@ export default {
     bottom: calc(100upx + env(safe-area-inset-bottom) / 2);
     left: 0;
     width: 100%;
-    /* min-height: 400upx; */
     display: flex;
     flex-direction: column;
     transform: translate(0, 600upx);
@@ -254,5 +255,9 @@ export default {
   }
   .diy-item.active {
     border: 6upx solid #f37b1d;
+  }
+  /deep/ .body p {
+    text-indent: 48upx;
+    margin: 12upx 0;
   }
 </style>

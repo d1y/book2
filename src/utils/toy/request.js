@@ -24,7 +24,11 @@ export default config => {
       method,
       header,
       success(data) {
-        if (data.statusCode == 200) {
+        /*
+        ** @tips 状态码为 302 || 200 表示成功
+        */
+        const statusCode = data.statusCode
+        if (statusCode == 200 || statusCode == 302) {
           uni.hideLoading()
           rcv(data.data)
         }
