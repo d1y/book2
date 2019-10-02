@@ -55,6 +55,10 @@ const themes = [
 
 如果你不喜欢`menubar`的图标的话🦊,你可以自己进行修改,文件在: `/src/utils/config/menu.js`
 
+### 贡献书源
+
+你可以贡献你的书源给这个项目, 具体写法和文档, 请看[这里](./bookSource.md)
+
 ## 参考项目
 
 - https://github.com/AoEiuV020/PaNovel
