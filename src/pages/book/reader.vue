@@ -7,7 +7,14 @@
         </view>
       </view>
     </topbar>
-    <view class="wrap-content" @tap="tapContent" 
+    <!-- TODO: bar -->
+    <view v-if="false" class="topbar-row padding-sm" :class="[ isDark ? 'bg-one' : 'bg-two']">
+      <text class="sm">{{ data.chapter_name }}</text>
+    </view>
+    <view class="wrap-content"
+    @touchstart="readerStart"
+    @touchend="readerEnd"
+    @tap="tapContent"
     :style="{ 
       paddingTop: isToolBar ? '100upx' : '',
       paddingBottom: isToolBar ? '200upx' : '',
@@ -19,9 +26,9 @@
         <text class="text-green padding-right-sm">#</text>
         {{ data.chapter_name }}
       </view>
-      <view class="body">
+      <scroll-view class="body">
         <rich-text :nodes="data.body"></rich-text>
-      </view>
+      </scroll-view>
       <view class="view-footer text-green line-green">
         已到末尾
       </view>
@@ -83,6 +90,13 @@
 				</view>
 			</view>
 		</view>
+    <!-- error -->
+    <view class="error-msg" v-if="isError">
+      <view class="text-sl text-pink text-center">
+        <view class="margin-lg"> 获取失败, 要不重试一下? </view>
+        <button class="cu-btn lg round bg-green shadow">重试</button>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -117,10 +131,35 @@ export default {
         color: '#fff',
         bgImg: ''
       },
-      fontSize: 50
+      isError: false,
+      fontSize: 50,
+      startData: {}
     }
   },
   methods: {
+    readerStart(e){
+      this.startData.clientX = e.changedTouches[0].clientX;
+      this.startData.clientY = e.changedTouches[0].clientY;
+    },
+    readerEnd(e) {
+      /*
+      ** 参考链接: https://www.cnblogs.com/gitByLegend/p/11509462.html
+      */
+      const subX = e.changedTouches[0].clientX - this.startData.clientX;
+      const subY = e.changedTouches[0].clientY - this.startData.clientY;
+
+      if( subY > 50 || subY < -50 ) {
+        // TODO: 上下滑
+      } else {
+        if( subX > 100 ) {
+          // TODO: 右滑(上一章)
+        } else if ( subX < -100 ) {
+          // TODO: 左滑(下一章)
+        } else{
+          // TODO: 无效
+        }
+      }
+    },
     showTree() {
       this.isModal = true
       this.isToolBar = false
@@ -154,6 +193,10 @@ export default {
         power: os.currentBattery,
         date: dayjs.date().text
       }
+    },
+    async loadBody(id = '2449577') {
+      const data = await book.getBody(id)
+      this.data = data
     }
   },
   async onLoad() {
@@ -164,10 +207,7 @@ export default {
     this.Themes = Themes
     this.diy = Themes.all[Themes.index]
     this.fontSize = Themes.fontSize
-    const test = await book.getChapters()
-    console.log(test)
-    // const data = await book.getBody()
-    // this.data = data
+    this.loadBody()
     setInterval(()=> {
       this.loadUtils()
     }, this.time)
@@ -180,7 +220,9 @@ export default {
     padding: 0;
   }
   .status-bar,
-  .bottom-bar {
+  .error-msg,
+  .bottom-bar,
+  .topbar-row {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -188,14 +230,28 @@ export default {
     z-index: 2333;
     transition: all .4s;
   }
+  .topbar-row {
+    top: 0;
+    bottom: unset;
+    /* height: 40upx; */
+  }
+  .error-msg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    height: 100vh;
+    background: rgba(0,0,0, .8);
+    flex-wrap: wrap;
+  }
   .status-bar.active {
     bottom: calc(55px + env(safe-area-inset-bottom) / 2);
   }
-  .status-bar.bg-one {
+  .bg-one {
     background: rgba(11, 11, 11, 0.77);
     color: #fff;
   }
-  .status-bar.bg-two {
+  .bg-two {
     background: rgba(241, 241, 241, 0.79)
   }
   .bottom-bar {
