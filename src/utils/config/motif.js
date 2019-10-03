@@ -14,9 +14,39 @@ const themes = [
   },
   {
     title: '少女',
-    bg: '#e03997',
+    bg: '#fff5f8',
     bgImg: '',
-    color: '#fff'
+    color: '#7f333d'
+  },
+  {
+    title: '骚黄',
+    bg: '#f2e8c8',
+    bgImg: '',
+    color: '#333'
+  },
+  {
+    title: '性冷淡',
+    bg: '#dfecf0',
+    bgImg: '',
+    color: '#333'
+  },
+  {
+    title: '原谅色',
+    bg: '#e3efe3',
+    bgImg: '',
+    color: '#333'
+  },
+  {
+    title: '深沉',
+    bg: '#e0e0e0',
+    bgImg: '',
+    color: '#333'
+  },
+  {
+    title: '神仙',
+    bg: 'rgb(0, 128, 0)',
+    bgImg: '',
+    color: 'rgb(70, 217, 37)'
   }
 ]
 

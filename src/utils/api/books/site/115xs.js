@@ -17,6 +17,7 @@ class xs extends trans {
     const result = {}
     const url = DRAW(`chapter/${ id }.html`)
     const HTML = await this._toHTML(url)
+    result.id = id
     result.raw_url = url
     result.title = HTML("#bookname").text()
     result.author = HTML(`#author`).text()
@@ -24,13 +25,9 @@ class xs extends trans {
     let rawContent = HTML(`#content`)
     result.body = rawContent.html()
     result.word_length = result.body.trim().length
-    let prev = false, next = false, chapters_id = 0
+    let prev = false, next = false, chapters_id = 0 // 目录`id`
     const bars = HTML(`.pager`)[0].children
-    const judge = `javascript:alert`, 
-          judgePrevText = `已经是第一章了`,
-          judgeNextText = `已经是最后一章了`,
-          nextText = `下一章`,
-          prevText = `上一章`
+    const judge = `javascript:alert`, nextText = `下一章`,prevText = `上一章`
     for (let i=0; i<bars.length; i++) {
       const current = bars[i]
       if ( current.type === 'tag' && current.children && current.children[0].data != '设置' ) {
@@ -40,7 +37,6 @@ class xs extends trans {
             chapters_id = href.split('/menu/')[1].split('.html')[0]
           } else if ( href.includes('chapter') ) {
             const isTextFlag = current.children[0].data
-            console.log('text: ', isTextFlag)
             const id = href.split('/chapter/')[1].split('.html')[0]
             if ( isTextFlag == nextText ) {
               next = id

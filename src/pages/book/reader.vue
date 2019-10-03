@@ -11,11 +11,11 @@
     <view v-if="false" class="topbar-row padding-sm" :class="[ isDark ? 'bg-one' : 'bg-two']">
       <text class="sm">{{ data.chapter_name }}</text>
     </view>
-    <view class="wrap-content"
+    <view v-if="data.body" class="wrap-content"
     @touchstart="readerStart"
     @touchend="readerEnd"
     @tap="tapContent"
-    :style="{ 
+    :style="{
       paddingTop: isToolBar ? '100upx' : '',
       paddingBottom: isToolBar ? '200upx' : '',
       backgroundColor: isDark ? darkTheme.bg : diy.bg,
@@ -45,7 +45,7 @@
     <view class="diy bg-black light" :class="isSetting ? 'active' : ''">
       <view class="margin-bottom-xs">
         <scroll-view class="shadow-blur" :scroll-with-animation="true" style="white-space: nowrap;background: rgba(57, 181, 74, .9)" scroll-x="true" scroll-left="0">
-          <view class="diy-item text-center shadow-blur"
+          <view class="diy-item text-center"
             :class="[ Themes.index == index ? 'active' : '' ]"
             v-for="(item,index) in Themes.all"
             :key="index"
@@ -80,14 +80,28 @@
     <view class="cu-modal drawer-modal justify-end" 
     @tap="isModal = false" :class="isModal ? 'show' : ''"
     style="z-index: 2333333">
-			<view class="cu-dialog basis-lg" @tap.stop="" :style="[{height:'calc(100vh - ' + 0 + 'px)'}]">
-				<view class="cu-list menu text-left">
-					<view class="cu-item arrow" v-for="(item,index) in 5" :key="index">
-						<view class="content">
-							<view>Item {{index +1}}</view>
-						</view>
-					</view>
-				</view>
+			<view class="cu-dialog basis-lg" @tap.stop="" :style="[{ height:'calc(100vh - ' + 0 + 'px)'} ]">
+        <scroll-view :style="[{ height: `${treeHeigth}px` }]" :scroll-top="treeTop" @scroll="scrollTree" :scroll-y="true">
+          <view class="margin-sm" v-if="true">
+            <button class="cu-btn bg-green round shadow shadow-lg">
+              <text class="text-lg cuIcon-top margin-right-xs"></text>
+              前面章节
+            </button>
+          </view>
+          <view id="tree" class="cu-list menu text-left" style="overflow: auto">
+            <view class="cu-item arrow" :class="data.id == item.id ? 'active' : ''" @tap="tapChapter(item.id, data.id == item.id)" v-for="(item,index) in Chapters.list" :key="index">
+              <view class="content text-bold" style="font-size: 24upx" :class="data.id == item.id ? 'text-green' : ''">
+                <view>{{ item.text }}</view>
+              </view>
+            </view>
+          </view>
+          <view class="margin-sm" v-if="true">
+            <button @tap="loadChaptersMore" class="cu-btn bg-green round shadow shadow-lg">
+              <text class="text-lg cuIcon-down margin-right-xs"></text>
+              加载更多
+            </button>
+          </view>
+        </scroll-view>
 			</view>
 		</view>
     <!-- error -->
@@ -127,16 +141,37 @@ export default {
       diy: {}, // 默认主题
       darkTheme: {
         title: '黑色',
-        bg: '#333',
+        bg: '#222',
         color: '#fff',
         bgImg: ''
       },
+      activeIndex: 0,
       isError: false,
       fontSize: 50,
-      startData: {}
+      startData: {},
+      treeHeigth: 100,
+      treeTop: 0,
+      Chapters: {
+        prev: false,
+        list: [],
+        next: false
+      },
+      currentPage: 1,
+      bookID: '', // 书籍`id`
+      chaptersID: '' // 目录`id`
     }
   },
   methods: {
+    scrollTree(e) {
+      const data = e.detail
+      this.treeTop = data.scrollTop
+      return false
+    },
+    tapChapter(id, flag) {
+      if (flag) return
+      this.loadBody(id)
+      this.isModal = false
+    },
     readerStart(e){
       this.startData.clientX = e.changedTouches[0].clientX;
       this.startData.clientY = e.changedTouches[0].clientY;
@@ -147,14 +182,33 @@ export default {
       */
       const subX = e.changedTouches[0].clientX - this.startData.clientX;
       const subY = e.changedTouches[0].clientY - this.startData.clientY;
-
+      const prev = this.data.prev, next = this.data.next
+      const sayMsg = text=> {
+        uni.showModal({
+          title: '提示',
+          content: text,
+          showCancel: false,
+          confirmText: '我知道了'
+        })
+      }
+      // TODO: 保存 上一章和当前章 访问状态
       if( subY > 50 || subY < -50 ) {
         // TODO: 上下滑
       } else {
         if( subX > 100 ) {
           // TODO: 右滑(上一章)
+          if (!prev) {
+            sayMsg('没有上一章节了')
+            return
+          }
+          this.loadBody(prev)
         } else if ( subX < -100 ) {
           // TODO: 左滑(下一章)
+          if (!next) {
+            sayMsg('没有下一章了')
+            return
+          }
+          this.loadBody(next)
         } else{
           // TODO: 无效
         }
@@ -194,12 +248,31 @@ export default {
         date: dayjs.date().text
       }
     },
-    async loadBody(id = '2449577') {
+    async loadBody(id) {
+      if (!id) return
       const data = await book.getBody(id)
       this.data = data
+      setTimeout(()=> {
+        uni.pageScrollTo({
+            scrollTop: 0,
+            duration: 150
+        });
+      }, 125)
+    },
+    async loadChapters() {
+      return
+      const data = await book.getChapters(id, page)
+      const list = this.Chapters.list
+      this.Chapters = {
+        list: list.concat(data.lists),
+        next: data.next
+      }
+    },
+    loadChaptersMore() {
+      this.loadChapters(id, page)
     }
   },
-  async onLoad() {
+  async onLoad({ id = `2449577` }) {
     // #ifdef APP-PLUS
     plus.navigator.setFullscreen(true);
     // #endif
@@ -207,10 +280,13 @@ export default {
     this.Themes = Themes
     this.diy = Themes.all[Themes.index]
     this.fontSize = Themes.fontSize
-    this.loadBody()
+    this.loadBody(id)
+    this.loadChapters()
     setInterval(()=> {
       this.loadUtils()
     }, this.time)
+    const systemInfo = uni.getSystemInfoSync()
+    this.treeHeigth = systemInfo.windowHeight
   }
 }
 </script>
@@ -218,6 +294,10 @@ export default {
 <style scoped>
   page {
     padding: 0;
+  }
+  .cu-list.menu>.cu-item.arrow.active:before {
+    content: "\E7CF";
+    color: #39b54a;
   }
   .status-bar,
   .error-msg,
@@ -302,12 +382,13 @@ export default {
   }
   .diy-item {
     display: inline-flex;
-    width: 120upx;
-    height: 120upx;
+    width: 100upx;
+    height: 100upx;
     margin: 8upx 10upx;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 0 8px 1px rgba(0,0,0,0.5);
   }
   .diy-item.active {
     border: 6upx solid #f37b1d;
