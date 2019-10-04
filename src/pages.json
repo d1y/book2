@@ -7,6 +7,12 @@
 			}
 		},
 		{
+			"path": "pages/webview",
+			"style": {
+				"navigationBarTitleText": "webview"
+			}
+		},
+		{
 			"path": "pages/book/details",
 			"style": {
 				"navigationStyle": "custom"
