@@ -86,16 +86,23 @@ class xs extends trans {
     const pgPrev = HTML(`.pg-prev`)[0]
     const pgNext = HTML(`.pg-next`)[0]
     // TODO: 判断是否为 `a` 标签, 如果是返回 `false`
-    prev = pgPrev.name == 'a' && pgPrev.attribs.href
-    next = pgNext.name == 'a' && pgNext.attribs.href
-    const Middle = str=> {
-      const sofa = str.split('/menu/')[1]
-      const splitPane = sofa.split('/')
-      return {
-        id: splitPane[0],
-        page: splitPane[1].split('.html')[0].split('_')[1]
+    try {
+      prev = pgPrev.name == 'a' && pgPrev.attribs.href
+      next = pgNext.name == 'a' && pgNext.attribs.href
+      const Middle = str=> {
+        const sofa = str.split('/menu/')[1]
+        const splitPane = sofa.split('/')
+        return {
+          id: splitPane[0],
+          page: splitPane[1].split('.html')[0].split('_')[1]
+        }
       }
+    } catch(err) {
+      console.error(err)
+      prev = false
+      next = false
     }
+    
     result.lists = LISTS
     result.total = LISTS.length
     result.prev = prev ? Middle(prev) : prev

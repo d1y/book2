@@ -82,7 +82,8 @@
     style="z-index: 2333333">
 			<view class="cu-dialog basis-lg" @tap.stop="" :style="[{ height:'calc(100vh - ' + 0 + 'px)'} ]">
         <scroll-view :style="[{ height: `${treeHeigth}px` }]" :scroll-top="treeTop" @scroll="scrollTree" :scroll-y="true">
-          <view class="margin-sm" v-if="true">
+          <view class="margin-sm" v-if="false">
+            <!-- TODO: 前面章节可能以后会需要 -->
             <button class="cu-btn bg-green round shadow shadow-lg">
               <text class="text-lg cuIcon-top margin-right-xs"></text>
               前面章节
@@ -95,7 +96,7 @@
               </view>
             </view>
           </view>
-          <view class="margin-sm" v-if="true">
+          <view class="margin-sm" v-if="Chapters.next">
             <button @tap="loadChaptersMore" class="cu-btn bg-green round shadow shadow-lg">
               <text class="text-lg cuIcon-down margin-right-xs"></text>
               加载更多
@@ -111,6 +112,14 @@
         <button class="cu-btn lg round bg-green shadow">重试</button>
       </view>
     </view>
+    <!-- menu-bar -->
+		<view style="z-index: 233333" class="cu-modal bottom-modal" :class="isMenu ? 'show' : ''">
+			<view class="cu-dialog">
+				<view class="padding-xl">
+					<button @tap="linkSources" class="cu-btn bg-green">访问原网页</button>
+				</view>
+			</view>
+		</view>
   </view>
 </template>
 
@@ -137,6 +146,7 @@ export default {
       isLock: false,
       isSetting: false,
       isModal: false,
+      isMenu: true,
       Themes: {},
       diy: {}, // 默认主题
       darkTheme: {
@@ -158,10 +168,16 @@ export default {
       },
       currentPage: 1,
       bookID: '', // 书籍`id`
-      chaptersID: '' // 目录`id`
     }
   },
   methods: {
+    linkSources() {
+      const data = this.data
+      // plus.runtime.openURL(this.info.url);
+      uni.navigateTo({
+        url: `/pages/webview?title=${ data.title }&url=${ data.raw_url }`
+      })
+    },
     scrollTree(e) {
       const data = e.detail
       this.treeTop = data.scrollTop
@@ -252,6 +268,7 @@ export default {
       if (!id) return
       const data = await book.getBody(id)
       this.data = data
+      this.bookID = data.chapters_id
       setTimeout(()=> {
         uni.pageScrollTo({
             scrollTop: 0,
@@ -259,8 +276,7 @@ export default {
         });
       }, 125)
     },
-    async loadChapters() {
-      return
+    async loadChapters(id, page=1) {
       const data = await book.getChapters(id, page)
       const list = this.Chapters.list
       this.Chapters = {
@@ -269,10 +285,14 @@ export default {
       }
     },
     loadChaptersMore() {
-      this.loadChapters(id, page)
+      let page = this.currentPage
+      ++page
+      this.currentPage = page
+      this.loadChapters(this.bookID, page)
     }
   },
-  async onLoad({ id = `2449577` }) {
+  async onLoad({ id = `3224242` }) {
+    // TODO: 将章节存入到文件中, 下次打开自动读取
     // #ifdef APP-PLUS
     plus.navigator.setFullscreen(true);
     // #endif
@@ -280,8 +300,9 @@ export default {
     this.Themes = Themes
     this.diy = Themes.all[Themes.index]
     this.fontSize = Themes.fontSize
-    this.loadBody(id)
-    this.loadChapters()
+    this.loadBody(id).then(r=> {
+      this.loadChapters(this.bookID)
+    })
     setInterval(()=> {
       this.loadUtils()
     }, this.time)
