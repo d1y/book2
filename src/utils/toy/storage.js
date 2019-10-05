@@ -1,4 +1,6 @@
 export default {
+  setSync: (key, data)=> uni.setStorageSync(key, data),
+  getSync: key=> uni.getStorageSync(key),
   get(key) {
     return new Promise(rcv=> {
       uni.getStorage({

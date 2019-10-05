@@ -2,7 +2,7 @@
   <view :class="[ isToolBar ? 'isTop' : '' ]">
     <topbar :title="data.title" bg="rgba(0,0,0,.8)" :isHide="!isToolBar" :isBack="true">
       <view slot="side">
-        <view class="text-white text-lg">
+        <view @tap="isMenu = true" class="text-white text-lg">
           <text class="cuIcon-moreandroid"></text>
         </view>
       </view>
@@ -113,7 +113,7 @@
       </view>
     </view>
     <!-- menu-bar -->
-		<view style="z-index: 233333" class="cu-modal bottom-modal" :class="isMenu ? 'show' : ''">
+		<view @tap="isMenu = false" style="z-index: 233333" class="cu-modal bottom-modal" :class=" isMenu ? 'show' : '' ">
 			<view class="cu-dialog">
 				<view class="padding-xl">
 					<button @tap="linkSources" class="cu-btn bg-green">访问原网页</button>
@@ -129,7 +129,7 @@ import systemInfo from '@/utils/toy/systemInfo'
 import dayjs from '@/utils/toy/day'
 import motif from '@/utils/config/motif'
 import topbar from '@/components/topbar'
-
+import qs from 'querystring'
 const book = new xs
 
 export default {
@@ -146,7 +146,7 @@ export default {
       isLock: false,
       isSetting: false,
       isModal: false,
-      isMenu: true,
+      isMenu: false,
       Themes: {},
       diy: {}, // 默认主题
       darkTheme: {
@@ -173,9 +173,15 @@ export default {
   methods: {
     linkSources() {
       const data = this.data
+      let POST = {
+        title: data.title,
+        url: data.raw_url
+      }
+      // TODO: `url`可能需要传递`data`
+      POST = qs.stringify(POST)
       // plus.runtime.openURL(this.info.url);
       uni.navigateTo({
-        url: `/pages/webview?title=${ data.title }&url=${ data.raw_url }`
+        url: `/pages/webview?${ POST }`
       })
     },
     scrollTree(e) {

@@ -112,4 +112,9 @@ class xs extends trans {
   }
 }
 
-export default xs
+export default {
+  logo: '',
+  desc: '',
+  site: '',
+  class: xs,
+}

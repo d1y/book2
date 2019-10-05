@@ -1,15 +1,19 @@
 <template>
   <view class="wrap">
-    <web-view src=""></web-view>
+    <web-view :src="url"></web-view>
   </view>
 </template>
 
 <script>
-import qs from 'querystring'
-console.log(qs)
 export default {
+  data() {
+    return {
+      url: ''
+    }
+  },
   onLoad(options) {
     const { title, url } = options
+    this.url = url
     uni.setNavigationBarTitle({ title })
   }
 }
