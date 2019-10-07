@@ -119,26 +119,28 @@ class Bookfetch {
 
  /*
  ** @tips 搜索热词
- ** @return <obj>
+ ** @return [ title: String ]
  */
  searchHotWords() {
-   return {}
+   return false
  }
 
  /*
  ** @tips 热门搜索
- ** @return <obj>
+ ** @return [{
+ **   id: String,
+ **   title: String
+ ** }]
  */
  hotWords() {
-  return {}
+  return false
  }
 
  /*
  ** @tips 搜索补全
- ** @return {}
  */
  searchAutoComplete() {
-   return {}
+   return false
  }
 
 }

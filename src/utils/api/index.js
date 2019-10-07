@@ -8,18 +8,19 @@
 import utils from '../toy/storage';
 
 const key = `default_site`
-const site = utils.getSync(key) || 'xs115'
+const Site = utils.getSync(key) || 'zhuishushenqi'
 
 // sites
 import xs115 from './books/site/115xs'
-import biquge from './books/site/biquge'
 import zhuishushenqi from './books/site/zhuishushenqi';
+// import biquge from './books/site/biquge'
 
+const books = {
+  'xs115': xs115,
+  'zhuishushenqi': zhuishushenqi
+}
 export default {
-  site,
-  books: {
-    'xs115': xs115,
-    'biquge': biquge,
-    'zhuishushenqi': zhuishushenqi
-  }
+  set: site=> utils.setSync(key, site),
+  get: site=> site ? books[site] : books[Site],
+  getAll: ()=> books
 }

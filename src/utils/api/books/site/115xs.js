@@ -113,8 +113,8 @@ class xs extends trans {
 }
 
 export default {
-  logo: '',
-  desc: '',
-  site: '',
-  class: xs,
+  logo: 'http://www.115xs.com/style/images/logo.png',
+  title: '115小说网',
+  site: 'http://www.115xs.com',
+  classes: xs,
 }

@@ -11,15 +11,20 @@ const decode = str=> unescape(str).split(`/agent/`)[1]
 class zhuishu extends trans {
   
   async searchHotWords() {
-    return await this.initRequest({
+    const data = await this.initRequest({
       url: DRAW(`book/search-hotwords`)
     })
+    return data.searchHotWords.map(item=> item.word)
   }
 
   async hotWords() {
-    return await this.initRequest({
+    const data = await this.initRequest({
       url: DRAW(`book/hot-word`)
     })
+    return data.newHotWords.map(item=> ({
+      id: item.book,
+      title: item.word
+    }))
   }
 
   async searchAutoComplete(query = `斗破苍穹`) {
@@ -41,7 +46,7 @@ class zhuishu extends trans {
     })
     lists.books = lists.books.map(item=> {
       // TODO: 可能在App端,`unescape`可能不存在
-      item.cover = UNCODE(item.cover)
+      item.cover = decode(item.cover)
       return item
     })
     return lists
@@ -64,4 +69,9 @@ class zhuishu extends trans {
 
 }
 
-export default zhuishu
+export default {
+  logo: '',
+  title: '追书神器-api',
+  site: 'http://api.zhuishushenqi.com',
+  classes: zhuishu
+}

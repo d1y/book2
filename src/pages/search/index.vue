@@ -59,9 +59,9 @@
         <view class="cu-item text-sm" 
         :class="[ item.color ]" 
         v-for="(item, index) in activeSearchHotWords" 
-        :key="item.word"
+        :key="item.title"
         @tap="toText(index, 's')">
-          {{ item.word }}
+          {{ item.title }}
         </view>
       </view>
     </view>
@@ -76,9 +76,9 @@
         <view class="cu-item text-sm" 
         :class="[ item.color ]" 
         v-for="(item, index) in activeNewHotWords" 
-        :key="item.word"
+        :key="item.id"
         @tap="toText(index, 'n')">
-          {{ item.word }}
+          {{ item.title }}
         </view>
       </view>
     </view>
@@ -124,9 +124,10 @@
   const searchKey = `search_historys`
 
   const randColr = require("@/utils/toy/randColors")
-  import books from "@/utils/api/books/site/zhuishushenqi"
+  import books from "@/utils/api"
   import List from '@/components/book/lists.vue'
-  const nw = new books
+  const Sites = books.get()
+  let nw = new Sites.classes
   // 防抖, 来自掘金
   function debounce(func, wait) {
     let timeout;
@@ -141,22 +142,19 @@
     }
   }
   const autoWait = 100 // 防抖等待时间
+  const cp = `https://i.loli.net/2019/09/17/Wyp1fruSeNJqmxt.png`
+  const cp1 = `https://i.loli.net/2019/09/17/hRAxCsdcOmrzfBi.png`
   export default {
     components: {
       List
     },
     data() {
-      const cp = `https://i.loli.net/2019/09/17/Wyp1fruSeNJqmxt.png`,
-        cp1 = `https://i.loli.net/2019/09/17/hRAxCsdcOmrzfBi.png`
       return {
         search: ``,
         searchFlag: false,
         historys: [],
         modalName: ``,
-        modalOptions: {
-          title: `提示`,
-          body: ``
-        },
+        modalOptions: { title: `提示`,body: `` },
         minBook: cp || cp1,
         minText: `没有搜索历史记录`,
         newHotWords: [], // 热门搜索, 有id
@@ -242,22 +240,19 @@
       toFetchHots(...arg) {
         if (!arg.length) return
         const that = this
-        const result = []
+        
         const MapColr = arr => arr.map(item => {
+          if (typeof item == 'string') {
+            return {
+              color: randColr(`text`),
+              title: item
+            }
+          }
           item.color = randColr(`text`)
           return item
         })
         const ArrSlice = (arr, len) => arr.slice(0, len)
         const isCheck = arg[0] == `搜索热词`
-        if (arg.length == 1) {
-          const ele = arg[0]
-          if (isCheck) {
-            result.push(nw.searchHotWords())
-          } else result.push(nw.hotWords())
-        } else if (arg.length >= 2) {
-          result.push(nw.searchHotWords())
-          result.push(nw.hotWords())
-        }
         function append(str, value) {
           const map = MapColr(value)
           if (str == 's') {
@@ -265,28 +260,37 @@
           } else that.newHotWords = map
           return map
         }
+
+        const result = []
+        if (arg.length == 1) {
+          if (isCheck) {
+            result.push(nw.searchHotWords())
+          } else result.push(nw.hotWords())
+        } else if (arg.length >= 2) {
+          result.push(nw.searchHotWords())
+          result.push(nw.hotWords())
+        }
+        
         Promise.all(result).then(r => {
-          const v1 = r[0]
-          if (r.length == 2) {
-            const v2 = r[1]
+          const [ searchHot, hotWord ] = r
+          if (hotWord) {
             that.activeSearchHotWords = ArrSlice(
-              append('s', v1.searchHotWords),
+              append('s', searchHot),
               that.nextFetch[0][2]
             )
             that.activeNewHotWords = ArrSlice(
-              append('n', v2.newHotWords),
+              append('n', hotWord),
               that.nextFetch[1][2]
             )
           } else {
             if (isCheck) {
+              const py = append('s', searchHot)
               that.activeSearchHotWords = ArrSlice(
-                append('s', v1.searchHotWords),
-                that.nextFetch[0][2]
+                py,that.nextFetch[0][2]
               )
             } else {
               that.activeNewHotWords = ArrSlice(
-                append('n', v1.newHotWords),
-                that.nextFetch[1][2]
+                py,that.nextFetch[1][2]
               )
             }
           }
@@ -294,14 +298,13 @@
       },
       toText(...indexs) {
         // 点击文字
-        let flag = indexs[1]
-        let index = indexs[0]
+        let [ index, flag ] = indexs
         let data
         if (flag == 'h') {
           data = this.historys[index]
         } else if (flag == 's') {
           data = this.activeSearchHotWords[index]
-          data.text = data.word
+          data.text = data.title
         } else if (flag == 'n') {
           // TODO: 跳转到书籍页面
           return
