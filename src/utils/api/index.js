@@ -8,7 +8,7 @@
 import utils from '../toy/storage';
 
 const key = `default_site`
-const Site = utils.getSync(key) || 'zhuishushenqi'
+const Site = utils.getSync(key) || 'xs115'
 
 // sites
 import xs115 from './books/site/115xs'

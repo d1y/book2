@@ -9,6 +9,47 @@ const $API = `http://m.115xs.com`
 const DRAW = trans.router($API)
 
 class xs extends trans {
+
+  /*
+  ** query : 搜索文字
+  ** start : 分页(0开始)
+  ** limit : 每页大小
+  */
+  async searchBook(data) {
+    const context = await this.initRequest({
+      url: DRAW(`e/search`),
+      data: {
+        keyboard: data.query,
+        classid: 0,
+        searchget: 1,
+        show: 'title,author'
+      }
+    })
+    console.log(context)
+    const $ = await this._toHTML(context)
+    const html = $('title').html()
+    console.log(html)
+    const result = {}
+    result.result = $('.caption').text()
+    console.log(result)
+    const bookLists = $('#sitebox dl')
+    console.log(bookLists)
+    return result
+  }
+
+  /*
+  ** @return <Promise>
+  */
+  async hotWords() {
+    const data = await this.initRequest({
+      url: DRAW(`api/hotsearch`)
+    })
+    return data.data.map(item=> ({
+      id: item.titleurl.split('/book/')[1].split('.html')[0],
+      title: item.title
+    }))
+  }
+
   /*
   ** @param <string> - id (书籍`id`)
   ** @return <Promise>

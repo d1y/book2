@@ -41,7 +41,7 @@ class Bookfetch {
   ** @tips 分类
   ** @return <obj>
   */
-  ranking() {
+  async ranking() {
     return {}
   }
 
@@ -49,15 +49,15 @@ class Bookfetch {
   ** @tips 获取带子分类的父分类
   ** @return <obj>
   */
-  ranking2() {
+  async ranking2() {
     return {}
   }
 
-  /*
-  ** @tips 获取分类书籍
-  ** @return <obj>
-  */
- categoryInfo() {
+/*
+** @tips 获取分类书籍
+** @return <obj>
+*/
+ async categoryInfo() {
    return {}
  }
 
@@ -65,7 +65,7 @@ class Bookfetch {
  ** @tips 获取书籍详情
  ** @return <obj>
  */
- bookInfo() {
+ async bookInfo() {
    return {}
  }
 
@@ -73,7 +73,7 @@ class Bookfetch {
  ** @tips 获取书籍章节<继承`class`务必重写此方法>
  ** @return <obj>
  */
- getChapters() {
+ async getChapters() {
    return {}
  }
 
@@ -81,7 +81,7 @@ class Bookfetch {
  ** @tips 获取章节内容
  ** @return <obj>
  */
- getBody() {
+ async getBody() {
   return {}
  }
 
@@ -89,7 +89,7 @@ class Bookfetch {
  ** @tips 获取作者书籍
  ** @return <obj>
  */
- getAuthors() {
+ async getAuthors() {
 
  }
 
@@ -97,7 +97,7 @@ class Bookfetch {
  ** @tips 评论
  ** @return <obj>
  */
- toSay() {
+ async toSay() {
   return {}
  }
 
@@ -105,7 +105,7 @@ class Bookfetch {
  ** @tips 书单
  ** @return <obj>
  */
- getBookList() {
+ async getBookList() {
   return {}
  }
 
@@ -113,7 +113,7 @@ class Bookfetch {
  ** @tips 获取书单详情
  ** @return <obj>
  */
- toBookList() {
+ async toBookList() {
   return {}
  }
 
@@ -121,8 +121,8 @@ class Bookfetch {
  ** @tips 搜索热词
  ** @return [ title: String ]
  */
- searchHotWords() {
-   return false
+ async searchHotWords() {
+   return []
  }
 
  /*
@@ -132,15 +132,17 @@ class Bookfetch {
  **   title: String
  ** }]
  */
- hotWords() {
-  return false
+ async hotWords() {
+  return []
  }
 
  /*
  ** @tips 搜索补全
+ ** @param {String} 搜索关键词
+ ** @return [ Stirng ]
  */
- searchAutoComplete() {
-   return false
+ async searchAutoComplete(key) {
+   return []
  }
 
 }

@@ -1,6 +1,10 @@
 <template>
   <view style="padding-top: 100upx">
     <view class="cu-bar bg-cyan diy-bar">
+       <!-- TODO: 源站切换 -->
+      <view v-if="false" class="padding-xs check-mirror">
+        <text class="text-white cuIcon-magic"></text> 切换
+      </view>
       <view class="search-form radius">
         <text class="cuIcon-search"></text>
         <input @keydown.enter="fetchSearchBook" @change="fetchSearchBook" @input="fetchSearchText" v-model.trim="search" type="text" placeholder="搜索小说"
@@ -192,7 +196,7 @@
         if (that.search == '' && !that.search) return
         nw.searchAutoComplete(that.search)
           .then(r=> {
-            that.autoTexts = r.keywords
+            that.autoTexts = r
           })
       }, autoWait),
       nextWords(flag) {
@@ -412,5 +416,10 @@
     padding: 10upx 0;
     border-bottom: 2upx solid #dfdcd9;
     color: #5f5d5a;
+  }
+
+  .check-mirror {
+    position: relative;
+    left: 11upx;
   }
 </style>

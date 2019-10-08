@@ -28,20 +28,21 @@ class zhuishu extends trans {
   }
 
   async searchAutoComplete(query = `斗破苍穹`) {
-    return await this.initRequest({
+    const data = await this.initRequest({
       url: DRAW(`book/auto-complete`),
       data: { query }
     })
+    return data.keywords
   }
 
+  /*
+  ** query : 搜索文字
+  ** start : 分页(0开始)
+  ** limit : 每页大小
+  */
   async searchBook(data) {
     const lists = await this.initRequest({
       url: DRAW(`book/fuzzy-search`),
-      /*
-      ** query : 搜索文字
-      ** start : 分页(0开始)
-      ** limit : 每页大小
-      */
       data
     })
     lists.books = lists.books.map(item=> {
