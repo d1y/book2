@@ -16,6 +16,8 @@ class xs extends trans {
   ** limit : 每页大小
   */
   async searchBook(data) {
+    // TODO: 搜索`302`跳转会错误,需要 try{}
+    // TODO: 分页
     const context = await this.initRequest({
       url: DRAW(`e/search`),
       data: {
@@ -25,15 +27,43 @@ class xs extends trans {
         show: 'title,author'
       }
     })
-    console.log(context)
-    const $ = await this._toHTML(context)
-    const html = $('title').html()
-    console.log(html)
+    const $ = await this._toHTML(context, false)
     const result = {}
-    result.result = $('.caption').text()
-    console.log(result)
+
+    // 搜索长度
+    let length = $('.caption').text()
+    length = length.replace(/[^0-9]/ig,"")
+    length = Number.parseInt(length)
+    result.length = length
+    const list = []
     const bookLists = $('#sitebox dl')
-    console.log(bookLists)
+    try {
+      for (let i=0; i<bookLists.length; i++) {
+        const ele = bookLists[i]
+        let id = ele.children[1].children[0].attribs.href
+        id = id.split('/book/')[1].split('.html')[0]
+        let cover = ele.children[1].children[0].children[0].attribs.src
+        let subInfo = ele.children[3].children[0]
+        let tag = subInfo.children[0].children[0].data
+        let title = subInfo.children[1].children[0].data
+        let author = ele.children[5].children[0].data
+        let state = ele.children[5].children[1].children[0].data
+        let desc = ele.children[7].children[0].children[0].data
+        list.push({
+          id,
+          cover,
+          tag,
+          title,
+          author,
+          state,
+          desc
+        })
+      }
+    } catch(err) {
+      throw new Error(err)
+    }
+    result.list = list
+    console.log(`result: `, result)
     return result
   }
 

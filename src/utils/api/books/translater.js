@@ -28,6 +28,7 @@ class Bookfetch {
   ** @return <Promise>
   */
   async _toHTML(html, flag = true) {
+    // TODO: 添加`DATA`(Post | Get)
     if (flag) {
       const HTML = await this.initRequest({
         url: html
