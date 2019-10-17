@@ -58,11 +58,11 @@
 
 <script>
 import topbar from '@/components/topbar'
-import api from '@/utils/api/books/site/zhuishushenqi'
+import api from '@/utils/api'
 import wordUtils from '@/utils/toy/wordFormat'
 import randCol from '@/utils/toy/randColors'
 const { word } = wordUtils
-const nw = new api
+const nw = new api.get().classes
 
 export default {
   components: {
@@ -78,18 +78,19 @@ export default {
   onLoad({ id=`548d9c17eb0337ee6df738f5` }) {
     const that = this
     that.bookID = id
-    nw.bookInfo(id).then(r=> {
-      r.wordCount = word(r.wordCount)
-      const result = []
-      r.tags.forEach(item=> {
-        result.push({
-          color: randCol(`text`),
-          text: item
-        })
-      })
-      r.tags = result
-      that.data = r
-    })
+    console.log(nw)
+    // nw.bookInfo(id).then(r=> {
+    //   r.wordCount = word(r.wordCount)
+    //   const result = []
+    //   r.tags.forEach(item=> {
+    //     result.push({
+    //       color: randCol(`text`),
+    //       text: item
+    //     })
+    //   })
+    //   r.tags = result
+    //   that.data = r
+    // })
   },
   onPageScroll() {
     // TODO: 滚动事件

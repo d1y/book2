@@ -10,6 +10,8 @@ const DRAW = trans.router($API)
 
 class xs extends trans {
 
+  site = 'xs115'
+
   /*
   ** query : 搜索文字
   ** start : 分页(0开始)
@@ -34,7 +36,7 @@ class xs extends trans {
     let length = $('.caption').text()
     length = length.replace(/[^0-9]/ig,"")
     length = Number.parseInt(length)
-    result.length = length
+    result.total = length
     const list = []
     const bookLists = $('#sitebox dl')
     try {
@@ -49,6 +51,9 @@ class xs extends trans {
         let author = ele.children[5].children[0].data
         let state = ele.children[5].children[1].children[0].data
         let desc = ele.children[7].children[0].children[0].data
+        // 然而这里的写法并不是这样的
+        let lastChapter = ''
+        let site = this.site
         list.push({
           id,
           cover,
@@ -56,13 +61,15 @@ class xs extends trans {
           title,
           author,
           state,
-          desc
+          desc,
+          lastChapter,
+          site
         })
       }
     } catch(err) {
       throw new Error(err)
     }
-    result.list = list
+    result.books = list
     console.log(`result: `, result)
     return result
   }
@@ -76,7 +83,8 @@ class xs extends trans {
     })
     return data.data.map(item=> ({
       id: item.titleurl.split('/book/')[1].split('.html')[0],
-      title: item.title
+      title: item.title,
+      site: this.site
     }))
   }
 

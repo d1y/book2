@@ -3,6 +3,7 @@
 ** @tips [ 接口版本 ]
 */
 import trans from '../translater'
+import { list } from 'postcss';
 
 const $API = `http://api.zhuishushenqi.com`
 const DRAW = trans.router($API)
@@ -45,11 +46,16 @@ class zhuishu extends trans {
       url: DRAW(`book/fuzzy-search`),
       data
     })
+    lists.currentPage = data.start
+    // TODO: hasMore
+    lists.hasMore = true
     lists.books = lists.books.map(item=> {
       // TODO: 可能在App端,`unescape`可能不存在
       item.cover = decode(item.cover)
+      item.id = item._id
       return item
     })
+    console.log(lists)
     return lists
   }
 
